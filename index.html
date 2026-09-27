@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Online Test</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231B2B5E'/%3E%3Cpath d='M9 17l5 5 9-12' stroke='%230D9488' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+:root{
+  --navy:#1B2B5E; --navy-2:#2A3D78; --teal:#0D9488; --teal-soft:#E3F4F2;
+  --ink:#1F2536; --muted:#5B6478; --rule:#CBD2DE; --rule-soft:#E4E8EF;
+  --desk:#E8ECF2; --paper:#FFFFFF; --pen:#B42318; --pen-soft:#FCEBEA; --amber:#B45309; --amber-soft:#FDF3E3;
+  --serif:"Bookman Old Style","Bookman","URW Bookman","Cambria",Georgia,serif;
+  --sans:Calibri,Carlito,"Segoe UI",Arial,sans-serif;
+  --mono:Consolas,"Cascadia Mono","Courier New",monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--desk);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.5}
+h1,h2,h3{font-family:var(--serif);color:var(--navy);font-weight:600;line-height:1.2;margin:0}
+code,pre,.mono{font-family:var(--mono)}
+code{font-size:.94em;background:#F1F3F7;padding:0 .25em;border-radius:3px}
+code.big{font-size:1.15em;letter-spacing:.08em;padding:1px 6px}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{max-width:900px;margin:0 auto;padding:0 16px}
+
+/* ---------- top bar + navigator ---------- */
+.bar{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;box-shadow:0 2px 10px rgba(19,28,58,.25)}
+.bar .wrap{display:flex;align-items:center;gap:16px;min-height:58px;flex-wrap:wrap}
+.bar .t{font-family:var(--serif);font-size:18px;flex:1;min-width:160px}
+.bar .who,.bar .count{font-size:15px;opacity:.85}
+.timer{font-family:var(--mono);font-size:21px;background:rgba(255,255,255,.12);border-radius:6px;padding:4px 10px;min-width:92px;text-align:center}
+.timer.warn{background:var(--amber)} .timer.low{background:var(--pen);animation:pulse 1s infinite}
+.btn{border:0;border-radius:6px;padding:10px 18px;font-weight:600;background:var(--teal);color:#fff}
+.btn:hover{filter:brightness(1.07)}
+.btn[disabled]{opacity:.6;cursor:wait}
+.btn.ghost{background:transparent;color:var(--navy);box-shadow:inset 0 0 0 2px var(--navy)}
+.bar .btn.ghost{color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.7)}
+.btn.big{padding:14px 26px;font-size:18px}
+.saved{font-size:13px;opacity:.7;min-width:44px}
+.qnav{background:#243668;border-top:1px solid rgba(255,255,255,.12)}
+.qnav .wrap{display:flex;gap:6px;min-height:46px;align-items:center;overflow-x:auto;flex-wrap:nowrap;padding-top:6px;padding-bottom:6px;scrollbar-width:thin}
+.qnav .lbl{font-size:13px;opacity:.75;margin-right:4px;white-space:nowrap}
+.chip{position:relative;flex:none;min-width:32px;height:32px;border-radius:5px;border:1.5px solid rgba(255,255,255,.55);background:transparent;color:#fff;font-size:14px;font-weight:600;padding:0 5px}
+.chip.some{background:linear-gradient(135deg,var(--teal) 50%,transparent 50%)}
+.chip.done{background:var(--teal);border-color:var(--teal)}
+.chip.flag::after{content:"";position:absolute;top:-4px;right:-4px;width:11px;height:11px;border-radius:50%;background:#F59E0B;border:2px solid #243668}
+@media (min-width:701px){.qnav .wrap{flex-wrap:wrap;max-width:1280px;justify-content:center}}
+.navkey{display:flex;gap:14px;font-size:12.5px;opacity:.8;white-space:nowrap;margin-left:10px}
+.navkey i{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:-1px;margin-right:4px;border:1.5px solid rgba(255,255,255,.6)}
+.navkey i.d{background:var(--teal);border-color:var(--teal)} .navkey i.f{background:#F59E0B;border-radius:50%;border:0}
+
+/* ---------- paper ---------- */
+.sheet{background:var(--paper);margin:28px auto 40px;max-width:900px;box-shadow:0 1px 0 var(--rule),0 12px 30px -18px rgba(27,43,94,.35);border-top:6px solid var(--navy)}
+.sheet-inner{padding:40px 56px 48px}
+@media (max-width:700px){.sheet-inner{padding:26px 16px 32px}.sheet{margin:16px auto 28px}}
+
+/* cover */
+.cover .course{color:var(--muted);font-size:16px}
+.cover h1{font-size:40px;margin:6px 0 2px}
+.cover .sub{font-family:var(--serif);font-size:20px;color:var(--navy-2)}
+.cover .school{color:var(--teal);font-weight:600;margin-top:4px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid var(--navy);margin:26px 0}
+.facts div{padding:12px 16px;border-right:1.5px solid var(--navy)}
+.facts div:last-child{border-right:0}
+.facts b{display:block;font-family:var(--serif);font-size:26px;color:var(--navy);font-weight:600}
+.facts span{color:var(--muted);font-size:14px}
+.cand{border:1.5px solid var(--navy);padding:18px 20px 8px;margin:0 0 26px}
+.cand h2{font-size:19px;margin-bottom:12px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.field.wide{grid-column:1/-1}
+@media (max-width:640px){.fields{grid-template-columns:1fr}.facts{grid-template-columns:1fr}.facts div{border-right:0;border-bottom:1.5px solid var(--navy)}.facts div:last-child{border-bottom:0}}
+.field label{display:block;font-weight:600;font-size:15px;margin-bottom:4px}
+.field label small{font-weight:400;color:var(--muted)}
+.field input{width:100%;font:inherit;padding:9px 11px;border:1.5px solid var(--rule);border-radius:4px;background:#fff}
+.field input:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 3px var(--teal-soft)}
+.field .err{color:var(--pen);font-size:14px;min-height:20px}
+.field.bad input{border-color:var(--pen)}
+.mailnote{display:flex;gap:10px;background:var(--amber-soft);border-left:4px solid var(--amber);padding:10px 14px;font-size:15.5px;margin:4px 0 14px}
+.mailnote b{color:var(--amber)}
+.instr h2{font-size:19px;margin-bottom:6px}
+.instr ul{margin:0 0 24px;padding-left:22px}
+.instr li{margin:4px 0}
+.teacherwarn{background:var(--pen-soft);border-left:4px solid var(--pen);padding:10px 14px;font-size:15px;margin-bottom:18px}
+.previewnote{background:var(--teal-soft);border-left:4px solid var(--teal);padding:10px 14px;font-size:15px;margin-bottom:18px}
+
+/* sections + questions */
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:2px solid var(--navy);padding-bottom:6px;margin:44px 0 4px}
+.sec-head.first{margin-top:0}
+.sec-head h2{font-size:22px}
+.sec-head span{color:var(--muted);font-size:14px;white-space:nowrap}
+.q{display:grid;grid-template-columns:52px 1fr;column-gap:10px;padding:22px 0 10px;border-bottom:1px solid var(--rule-soft);scroll-margin-top:130px}
+.q:last-child{border-bottom:0}
+.qside{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.qn{font-family:var(--serif);font-weight:700;font-size:22px;color:var(--navy);line-height:1.3}
+.flagbtn{border:1.5px solid var(--rule);background:#fff;color:var(--muted);border-radius:5px;font-size:12.5px;padding:3px 6px;line-height:1.2}
+.flagbtn[aria-pressed="true"]{background:#FEF3C7;border-color:#F59E0B;color:#92400E;font-weight:600}
+.qbody{min-width:0}
+.stem{margin-bottom:6px}
+.part{position:relative;padding:10px 64px 12px 0}
+.plabel{font-weight:700;margin-right:6px}
+.pmarks{position:absolute;right:0;top:10px;font-weight:600;color:var(--navy)}
+.prompt{margin-bottom:10px}
+pre.code{background:#F6F7FA;border-left:3px solid var(--navy);padding:12px 16px;overflow-x:auto;font-size:15.5px;line-height:1.6;margin:10px 0;white-space:pre}
+.fig{margin:10px 0 4px;max-width:560px}
+svg.fc{width:100%;height:auto;display:block}
+.fc-s{fill:#fff;stroke:var(--navy);stroke-width:2}
+.fc-t{font-family:Arial,Helvetica,sans-serif;font-size:14px;fill:var(--ink)}
+.fc-a{fill:none;stroke:var(--navy);stroke-width:2}
+.fc-head{fill:var(--navy)}
+.fc-l{font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;fill:var(--navy)}
+.fc-tag{fill:#FEF3C7;stroke:#B45309;stroke-width:2}
+.fc-tagt{font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;fill:#92400E}
+
+/* option types */
+.opts{display:grid;gap:8px}
+.opts.grid{grid-template-columns:repeat(4,1fr)}
+.opts.grid.g2{grid-template-columns:1fr 1fr}
+svg.lg{width:100%;height:auto;display:block}
+.opts.grid svg.lg{max-width:260px}
+@media (max-width:640px){.opts.grid{grid-template-columns:1fr 1fr}}
+.opt{display:flex;gap:10px;align-items:center;border:1.5px solid var(--rule);border-radius:5px;padding:9px 12px;cursor:pointer;background:#fff}
+.opt input{accent-color:var(--teal);width:18px;height:18px;flex:none;margin:0}
+.opt:hover{border-color:var(--navy-2)}
+.opt:has(input:checked){border-color:var(--teal);background:#F3FAF9}
+.opts.grid .opt{flex-direction:column;justify-content:center;padding:10px 8px}
+svg.shape{width:100%;max-width:120px;height:auto}
+.opts.grid .fc-s{fill:#fff}
+.tbl-wrap{overflow-x:auto}
+table.tk{border-collapse:collapse;margin:6px 0}
+table.tk th,table.tk td{border:1.5px solid var(--navy);padding:7px 10px;vertical-align:middle}
+table.tk th{background:#EEF1F7;font-weight:600;font-size:15px}
+table.tk td.st{min-width:280px}
+table.tk td.c{text-align:center;width:90px}
+table.tk input{accent-color:var(--teal);width:20px;height:20px;cursor:pointer}
+table.gt{border-collapse:collapse;margin:6px 0}
+table.gt th,table.gt td{border:1.5px solid var(--navy);padding:6px 10px;text-align:center;vertical-align:middle}
+table.gt th{background:#EEF1F7;font-weight:600;font-size:15px}
+table.gt td.l{text-align:left}
+table.gt td.given{background:#F6F7FA;font-family:var(--mono)}
+table.gt select.sel{font-size:15px}
+table.pv{border-collapse:collapse;margin:6px 0}
+table.pv td{border:1.5px solid var(--navy);padding:8px 10px;text-align:center;font-family:var(--mono);font-size:17px;min-width:56px}
+select.sel{font:inherit;font-family:var(--mono);font-size:15.5px;padding:3px 6px;border:1.5px solid var(--navy);border-radius:4px;background:#F2F8F7;color:var(--ink);cursor:pointer}
+pre.code select.sel{font-size:15px;padding:1px 4px;margin:-2px 0}
+table.pv select.sel{font-size:16px}
+.gapline{margin:8px 0}
+.match{display:grid;gap:10px}
+.match-row{display:grid;grid-template-columns:220px 1fr;gap:12px;align-items:center}
+.match-row b{font-weight:600}
+.match select{font:inherit;padding:8px;border:1.5px solid var(--rule);border-radius:4px;width:100%;background:#fff}
+@media (max-width:640px){.match-row{grid-template-columns:1fr}.part{padding-right:0}.pmarks{position:static;display:block;text-align:right}}
+
+/* order */
+ol.order{list-style:none;padding:0;margin:4px 0;max-width:640px;display:grid;gap:6px}
+ol.order li{display:flex;align-items:center;gap:10px;border:1.5px solid var(--rule);border-radius:5px;background:#fff;padding:6px 8px}
+ol.order .n{font-family:var(--serif);font-weight:700;color:var(--navy);width:20px;text-align:center}
+ol.order .tx{flex:1;font-weight:600;line-height:1.3}
+.mv{border:1.5px solid var(--navy);background:#fff;color:var(--navy);border-radius:4px;width:34px;height:30px;font-size:14px;line-height:1}
+.mv:disabled{opacity:.25;cursor:default}
+.hint{font-size:14px;color:var(--muted);margin-top:4px}
+
+/* bits */
+.bits{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.bitgap{width:14px}
+.bits.many .bit{width:42px;height:52px;font-size:22px}
+.bit{width:50px;height:58px;border:2px solid var(--navy);border-radius:6px;background:#fff;font-family:var(--mono);font-size:26px;font-weight:700;color:var(--muted)}
+.bit[aria-pressed="true"]{background:var(--navy);color:#fff}
+.bit:disabled{cursor:default}
+@media (max-width:480px){.bit{width:36px;height:48px;font-size:21px}.bits{gap:4px;flex-wrap:wrap}.bitgap{width:6px}
+  .q{grid-template-columns:1fr}.qside{flex-direction:row;align-items:center;gap:12px;margin-bottom:2px}
+  .bar .wrap{gap:8px 12px;min-height:50px}.bar .t{font-size:15px;min-width:0}.bar .who,.saved{display:none}.bar .btn{padding:8px 12px}.timer{font-size:18px;min-width:76px}}
+
+/* errline */
+.codepick{background:#F6F7FA;border-left:3px solid var(--navy);padding:8px 0;margin:8px 0;max-width:620px}
+.ln{display:flex;width:100%;text-align:left;border:0;background:transparent;padding:3px 14px 3px 0;font-family:var(--mono);font-size:15.5px;white-space:pre;border-left:4px solid transparent}
+.ln .no{display:inline-block;width:38px;text-align:right;padding-right:12px;color:var(--muted);user-select:none}
+.ln:hover{background:#E9EEF6}
+.ln[aria-checked="true"]{background:#FEF3C7;border-left-color:#F59E0B}
+.ln:disabled{cursor:default}
+
+.endpaper{text-align:center;margin-top:36px;padding-top:26px;border-top:2px solid var(--navy)}
+.endpaper p{color:var(--muted);margin:0 0 14px}
+
+/* ---------- review marking ---------- */
+.review .part{padding-right:84px}
+.mk{position:absolute;right:0;top:6px;width:62px;height:62px;border:2.5px solid var(--pen);border-radius:50%;color:var(--pen);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:19px;transform:rotate(-8deg);background:#fff}
+.mk.full{border-color:var(--teal);color:var(--teal)}
+@media (max-width:640px){.review .part{padding-right:0}.mk{position:static;margin:0 0 8px auto;width:54px;height:54px}}
+.ok{background:var(--teal-soft)!important;border-color:var(--teal)!important}
+.bad{background:var(--pen-soft)!important;border-color:var(--pen)!important}
+.bit.ok[aria-pressed="true"]{background:var(--teal)!important;color:#fff} .bit.bad[aria-pressed="true"]{background:var(--pen)!important;color:#fff}
+.bit.bad{color:var(--pen)}
+.ln.ok{border-left-color:var(--teal)} .ln.bad{border-left-color:var(--pen)}
+.should{box-shadow:inset 0 0 0 3px var(--teal)}
+.fb{margin-top:12px;border-left:4px solid var(--pen);background:#FDF7F6;padding:10px 14px;font-size:16px}
+.fb.full{border-color:var(--teal);background:#F3FAF9}
+.fb.none{border-color:var(--amber);background:var(--amber-soft)}
+.fb h4{margin:0 0 4px;font-family:var(--sans);font-size:16px;color:var(--ink)}
+.fb .lbl{font-weight:700;color:var(--navy)}
+.reviewbar{background:var(--paper);border-bottom:1px solid var(--rule);position:sticky;top:58px;z-index:15}
+.reviewbar .wrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap;min-height:54px}
+.reviewbar label{display:flex;gap:8px;align-items:center;font-size:15px}
+.hidden-q{display:none}
+
+/* ---------- results ---------- */
+.res-top{display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:center;padding-bottom:26px;border-bottom:2px solid var(--navy)}
+@media (max-width:640px){.res-top{grid-template-columns:1fr;justify-items:center;text-align:center}}
+.grade-ring{width:168px;height:168px;border:5px solid var(--pen);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-7deg);color:var(--pen)}
+.grade-ring b{font-family:var(--serif);font-size:82px;line-height:.9;font-weight:700}
+.grade-ring span{font-size:14px;font-weight:600;letter-spacing:.03em}
+.res-top h1{font-size:30px}
+.res-top .score{font-family:var(--serif);font-size:52px;color:var(--navy);line-height:1.05;margin:10px 0 4px}
+.res-top .score small{font-size:24px;color:var(--muted)}
+.res-top .meta{color:var(--muted);font-size:15.5px}
+.res-block{margin-top:30px}
+.res-block h2{font-size:21px;margin-bottom:12px}
+.res-block h2 small{font-family:var(--sans);font-size:14px;color:var(--muted);font-weight:400;margin-left:6px}
+.brow{display:grid;grid-template-columns:minmax(150px,260px) 1fr 74px;gap:14px;align-items:center;margin:9px 0}
+.brow .nm{font-weight:600;font-size:16px;line-height:1.25}
+.brow .nm small{display:block;font-weight:400;color:var(--muted);font-size:13.5px}
+.track{height:16px;background:var(--rule-soft);border-radius:8px;overflow:hidden}
+.fill{height:100%;background:var(--teal);border-radius:8px;transition:width .9s cubic-bezier(.2,.7,.2,1)}
+.fill.mid{background:var(--amber)} .fill.lo{background:var(--pen)}
+.brow .v{font-family:var(--mono);text-align:right;font-size:15px}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);border:1.5px solid var(--navy)}
+.tiles div{padding:12px 14px;border-right:1.5px solid var(--navy)}
+.tiles div:last-child{border-right:0}
+.tiles b{display:block;font-family:var(--serif);font-size:24px;color:var(--navy)}
+.tiles span{color:var(--muted);font-size:14px}
+@media (max-width:640px){.tiles{grid-template-columns:1fr 1fr}.tiles div:nth-child(2){border-right:0}.tiles div:nth-child(-n+2){border-bottom:1.5px solid var(--navy)}.brow{grid-template-columns:1fr 64px}.brow .track{grid-column:1/-1;grid-row:2}}
+.qmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px}
+.qm{border:0;border-radius:5px;padding:6px 2px;font-weight:700;font-size:14px;color:#fff;line-height:1.15}
+.qm small{display:block;font-weight:400;font-size:12px;opacity:.9}
+.qm.full{background:var(--teal)} .qm.part{background:var(--amber)} .qm.zero{background:var(--pen)} .qm.none{background:#8A93A6}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.revgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 30px}
+@media (max-width:640px){.revgrid{grid-template-columns:1fr}}
+.revise{padding-left:20px;margin:0}
+.revise li{margin:3px 0}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media (max-width:700px){.twocol{grid-template-columns:1fr}}
+.note{background:#F6F7FA;border-left:4px solid var(--navy);padding:10px 14px;font-size:15.5px}
+.mail{display:flex;gap:10px;align-items:center;padding:10px 14px;border:1.5px solid var(--rule);border-radius:6px;margin-top:22px;font-size:15.5px}
+.mail .dot{width:12px;height:12px;border-radius:50%;background:var(--muted);flex:none}
+.mail.ok .dot{background:var(--teal)} .mail.fail .dot{background:var(--pen)} .mail.busy .dot{background:var(--amber);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.spin{width:54px;height:54px;border:5px solid var(--rule-soft);border-top-color:var(--teal);border-radius:50%;animation:rot 1s linear infinite;margin:10px auto 18px}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* ---------- modal + toast ---------- */
+.overlay{position:fixed;inset:0;background:rgba(19,28,58,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal{background:#fff;max-width:620px;width:100%;max-height:92vh;overflow:auto;border-top:6px solid var(--teal);padding:26px 28px}
+@media (max-width:480px){.modal{padding:20px 16px}}
+.modal h2{font-size:24px;margin-bottom:8px}
+.warnbox{background:var(--amber-soft);border-left:4px solid var(--amber);padding:10px 14px;margin:12px 0;font-size:15.5px}
+.okbox{background:var(--teal-soft);border-left:4px solid var(--teal);padding:10px 14px;margin:12px 0;font-size:15.5px}
+.errbox{background:var(--pen-soft);border-left:4px solid var(--pen);padding:10px 14px;margin:12px 0;font-size:15.5px}
+.modal .row{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}
+dl.check{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:14px 0;border:1.5px solid var(--navy);padding:14px 16px}
+dl.check dt{color:var(--muted);font-size:15px}
+dl.check dd{margin:0;font-weight:700;font-size:18px;word-break:break-all}
+dl.check dd.email{color:var(--navy);font-family:var(--mono);font-size:17px}
+dl.check dd.empty{font-weight:400;color:var(--muted);font-style:italic;font-size:15px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 20px;border-radius:6px;z-index:60;box-shadow:0 8px 24px rgba(0,0,0,.25);font-weight:600}
+.toast.warn{background:var(--amber)}
+
+@media print{
+  body{background:#fff;font-size:12pt}
+  .bar,.reviewbar,.actions,.mail,.noprint{display:none!important}
+  .sheet{box-shadow:none;margin:0;border-top:0}
+  .sheet-inner{padding:0}
+  .q{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="bar" id="bar" hidden>
+  <div class="wrap">
+    <div class="t" id="barTitle">Progress Test</div>
+    <div class="who" id="barWho"></div>
+    <div class="count" id="barCount"></div>
+    <div class="saved" id="saved" aria-live="polite"></div>
+    <div class="timer" id="timer" role="timer" aria-label="Time remaining">30:00</div>
+    <button class="btn" id="finishBtn" type="button">Finish test</button>
+  </div>
+  <nav class="qnav" id="qnav" aria-label="Questions" hidden><div class="wrap" id="qnavInner"></div></nav>
+</header>
+<div id="app"></div>
+<div id="modalRoot"></div>
+
+<noscript><p style="padding:2rem">This test needs JavaScript. Please use an up-to-date browser.</p></noscript>
+<script src="config.js"></script>
+<script src="questions.js"></script>
+<script src="marking.js"></script>
+<script>
+(function () {
+'use strict';
+
+/* ================================================================
+   Setup
+   ================================================================ */
+var CFG = window.TEST_CONFIG || {};
+var EXAM = window.EXAM;
+if (!EXAM) { document.getElementById('app').innerHTML = '<p style="padding:2rem">The test could not be loaded (questions.js is missing). Please tell your teacher.</p>'; return; }
+var SERVER = !!(CFG.appsScriptUrl && /^https?:\/\//.test(CFG.appsScriptUrl));
+var LOCAL_KEY = null;                 // only used for the teacher's local preview
+var SECTIONS = EXAM.sections;
+var PARTS = [], PART = {}, QOF = {};
+EXAM.questions.forEach(function (q) {
+  q.parts.forEach(function (p) { p.qnum = q.num; p.section = q.section; p.full = 'Q' + q.num + (p.label || ''); p.short = q.num + (p.label || '').replace(/[()]/g, ''); PARTS.push(p); PART[p.id] = p; QOF[p.id] = q; });
+});
+var TOTAL = PARTS.reduce(function (s, p) { return s + p.marks; }, 0);
+var DURATION = (EXAM.meta.durationMinutes || 30) * 60000;
+var SKEY = 'mbis-' + EXAM.meta.testId;
+document.title = EXAM.meta.year + ' ' + (EXAM.meta.subject || 'Computing') + ' — ' + EXAM.meta.title;
+
+/* ================================================================
+   State (autosaved to this browser)
+   ================================================================ */
+var state = load() || freshState();
+function freshState() { return { phase: 'start', student: {}, startCode: '', answers: {}, flags: {}, startedAt: null, submittedAt: null, tabSwitches: 0, warned: [], autoSubmitted: false, result: null, mail: { status: 'idle' }, submissionId: null, submitError: '' }; }
+function load() { try { var s = localStorage.getItem(SKEY); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
+var saveT;
+function save(flash) {
+  try {
+    localStorage.setItem(SKEY, JSON.stringify(state));
+    if (flash) { var el = $('#saved'); el.textContent = 'Saved'; clearTimeout(saveT); saveT = setTimeout(function () { el.textContent = ''; }, 1200); }
+  } catch (e) { /* storage blocked — the test still works in memory */ }
+}
+
+/* ================================================================
+   Helpers
+   ================================================================ */
+function $(s, r) { return (r || document).querySelector(s); }
+function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function strip(html) { var d = document.createElement('div'); d.innerHTML = html; return d.textContent; }
+function fmtTime(ms) { ms = Math.max(0, ms); var s = Math.ceil(ms / 1000), m = Math.floor(s / 60); return (m < 10 ? '0' : '') + m + ':' + ((s % 60) < 10 ? '0' : '') + (s % 60); }
+function fmtDur(ms) { var m = Math.round(ms / 60000); return m < 1 ? 'under 1 min' : m + ' min'; }
+function pct(a, b) { return b ? Math.round(a / b * 1000) / 10 : 0; }
+function sectionName(id) { for (var i = 0; i < SECTIONS.length; i++) if (SECTIONS[i].id === id) return SECTIONS[i].name; return id; }
+function fullName(st) { return (st.first || '') + ' ' + (st.last || ''); }
+function toast(msg, cls) { var t = document.createElement('div'); t.className = 'toast ' + (cls || ''); t.setAttribute('role', 'status'); t.textContent = msg; document.body.appendChild(t); setTimeout(function () { t.remove(); }, 4200); }
+function isAnswered(p) { return answered_(state.answers[p.id]); }     // answered_ comes from marking.js
+function optHtml(o) { return o.html || (o.code ? '<code>' + esc(o.text) + '</code>' : esc(o.text)); }
+
+// Seeded shuffle: each student gets their own option order, which stays the same after a refresh.
+function seedOf(s) { var h = 1779033703; for (var i = 0; i < s.length; i++) { h = Math.imul(h ^ s.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; } return h >>> 0; }
+function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function shuffled(list, salt) {
+  var a = list.slice(), r = rng(seedOf((state.submissionId || 'x') + '|' + salt));
+  for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+function currentOrder(p) { var a = state.answers[p.id]; return Array.isArray(a) ? a : shuffled(p.items, p.id).map(function (it) { return it.id; }); }
+function itemText(p, id) { for (var i = 0; i < p.items.length; i++) if (p.items[i].id === id) return p.items[i].text; return id; }
+
+/* ================================================================
+   Talking to Google Apps Script
+   ================================================================ */
+function api(payload) {
+  payload.key = CFG.sharedKey; payload.testId = EXAM.meta.testId;
+  // text/plain keeps this a "simple" request (no CORS preflight), which Apps Script needs.
+  return fetch(CFG.appsScriptUrl, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow' })
+    .catch(function (e) { var er = new Error('network: ' + e.message); er.kind = 'network'; throw er; })
+    .then(function (r) {
+      return r.text().then(function (t) {
+        try { return JSON.parse(t); }
+        catch (e) {
+          var m = /<title>([^<]*)<\/title>/i.exec(t), er = new Error('The server sent a web page instead of data' + (m ? ' ("' + m[1].trim() + '")' : '') + '.');
+          er.kind = 'notjson'; er.status = r.status; throw er;
+        }
+      });
+    });
+}
+function connectMsg(e) {
+  var tip = ' <br><small>Teacher: open this page with <code>?check</code> at the end of the address to find the problem.</small>';
+  if (e && e.kind === 'notjson') return 'The test server is not set up correctly. ' + esc(e.message) + tip;
+  return 'Could not reach the test server. If other websites work, the problem is the test set-up, not your internet.' + tip;
+}
+function loadLocalKey(cb) {
+  if (SERVER || window.ANSWER_KEY) { LOCAL_KEY = window.ANSWER_KEY || null; return cb(); }
+  var s = document.createElement('script');
+  s.src = CFG.localKeyPath || '../teacher-only/answer-key.js';
+  s.onload = function () { LOCAL_KEY = window.ANSWER_KEY || null; cb(); };
+  s.onerror = function () { cb(); };
+  document.head.appendChild(s);
+}
+
+/* ================================================================
+   Rendering questions (exam + review)
+   ================================================================ */
+function renderPaper(mode) {
+  var R = mode === 'review' ? state.result : null, html = '', lastSec = null, first = true;
+  EXAM.questions.forEach(function (q) {
+    if (q.section !== lastSec) {
+      lastSec = q.section;
+      var secMax = PARTS.filter(function (p) { return p.section === q.section; }).reduce(function (s, p) { return s + p.marks; }, 0);
+      var secTxt = secMax + ' marks';
+      if (R) { var bs = R.bySection.filter(function (s) { return s.id === q.section; })[0]; secTxt = 'You scored ' + bs.score + ' / ' + bs.max; }
+      var letter = String.fromCharCode(65 + SECTIONS.map(function (s) { return s.id; }).indexOf(q.section));
+      html += '<div class="sec-head' + (first ? ' first' : '') + '"><h2>Section ' + letter + ': ' + esc(sectionName(q.section)) + '</h2><span>' + secTxt + '</span></div>';
+      first = false;
+    }
+    var lost = R && q.parts.some(function (p) { return R.parts[p.id].score < p.marks; });
+    var fl = !!state.flags[q.num];
+    html += '<section class="q" id="q-' + q.num + '"' + (R ? ' data-lost="' + (lost ? 1 : 0) + '"' : '') + '><div class="qside"><div class="qn">' + q.num + '</div>' +
+      (R ? '' : '<button type="button" class="flagbtn" data-flag="' + q.num + '" aria-pressed="' + fl + '" title="Flag this question to come back to it">⚑ ' + (fl ? 'Flagged' : 'Flag') + '</button>') +
+      '</div><div class="qbody">';
+    if (q.stem) html += '<div class="stem">' + q.stem + '</div>';
+    if (q.listing) html += '<pre class="code">' + esc(q.listing) + '</pre>';
+    if (q.figure) html += '<div class="fig">' + q.figure + '</div>';
+    q.parts.forEach(function (p) { html += renderPart(p, R); });
+    html += '</div></section>';
+  });
+  return html;
+}
+
+function renderPart(p, R) {
+  var res = R ? R.parts[p.id] : null, sol = R && R.solutions ? R.solutions[p.id] : null;
+  var a = state.answers[p.id], dis = res ? ' disabled' : '', ai = 'data-pid="' + p.id + '"', h = '';
+  h += '<div class="part" id="p-' + p.id + '">';
+  if (p.lead) h += '<div class="lead">' + p.lead + '</div>';
+  h += '<div class="prompt">' + (p.label ? '<span class="plabel">' + p.label + '</span>' : '') + p.prompt + '</div>';
+  h += res ? '<div class="mk' + (res.score >= p.marks ? ' full' : '') + '" aria-label="' + res.score + ' out of ' + p.marks + ' marks">' + res.score + '/' + p.marks + '</div>'
+           : '<div class="pmarks">[' + p.marks + ']</div>';
+  if (p.listing) h += '<pre class="code">' + esc(p.listing) + '</pre>';
+  switch (p.type) {
+    case 'mcq':
+      h += '<div class="opts' + (p.grid ? ' grid' + (p.grid === 2 ? ' g2' : '') : '') + '" role="radiogroup" aria-label="Answers for ' + p.full + '">';
+      shuffled(p.options, p.id).forEach(function (o) {
+        var c = '';
+        if (res) { if (sol && o.id === sol.key) c = ' ok'; else if (a === o.id) c = res.score ? ' ok' : ' bad'; }
+        h += '<label class="opt' + c + '"><input type="radio" name="r-' + p.id + '" ' + ai + ' data-t="mcq" value="' + o.id + '"' + (a === o.id ? ' checked' : '') + dis + '><span>' + optHtml(o) + '</span></label>';
+      });
+      h += '</div>';
+      break;
+    case 'select':
+      var tpl = p.code ? esc(p.template) : p.template;
+      tpl = tpl.replace(/\{\{(\d+)\}\}/g, function (m, n) {
+        n = +n; var g = p.gaps[n], v = a && a[n] != null ? a[n] : '', gc = res ? (res.items[n] ? ' ok' : ' bad') : '';
+        var s = '<select class="sel' + gc + '" ' + ai + ' data-t="sel" data-k="' + n + '" aria-label="' + p.full + ' gap ' + (n + 1) + '"' + dis + '><option value="">' + (p.code ? '▾ choose' : 'choose…') + '</option>';
+        g.options.forEach(function (o) { s += '<option value="' + esc(o) + '"' + (v === o ? ' selected' : '') + '>' + esc(o) + '</option>'; });
+        return s + '</select>';
+      });
+      h += p.code ? '<pre class="code">' + tpl + '</pre>' : '<div>' + tpl + '</div>';
+      break;
+    case 'tick':
+      h += '<div class="tbl-wrap"><table class="tk"><tr><th>Statement</th>' + p.columns.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr>';
+      p.rows.forEach(function (row, ri) {
+        h += '<tr><td class="st">' + row.text + '</td>';
+        p.columns.forEach(function (c, ci) {
+          var chosen = a && a[ri] === ci, cc = '';
+          if (res) { if (chosen) cc = res.items[ri] ? ' ok' : ' bad'; else if (sol && ci === sol.key[ri] && !res.items[ri]) cc = ' should'; }
+          h += '<td class="c' + cc + '"><input type="radio" name="t-' + p.id + '-' + ri + '" ' + ai + ' data-t="tick" data-k="' + ri + '" value="' + ci + '" aria-label="' + esc(strip(row.text)) + ': ' + esc(c) + '"' + (chosen ? ' checked' : '') + dis + '></td>';
+        });
+        h += '</tr>';
+      });
+      h += '</table></div>';
+      break;
+    case 'match':
+      h += '<div class="match">';
+      p.items.forEach(function (it, ii) {
+        var v = a && a[ii] != null ? a[ii] : '', mc = res && v !== '' ? (res.items[ii] ? ' ok' : ' bad') : '';
+        h += '<div class="match-row"><b>' + esc(it.text) + '</b><select class="' + mc + '" ' + ai + ' data-t="match" data-k="' + ii + '" aria-label="Choice for ' + esc(it.text) + '"' + dis + '><option value="">Choose…</option>';
+        p.options.forEach(function (o, oi) { h += '<option value="' + oi + '"' + (String(v) === String(oi) ? ' selected' : '') + '>' + esc(o) + '</option>'; });
+        h += '</select></div>';
+        if (res && sol && !res.items[ii]) h += '<div class="match-row"><span></span><small>Correct: <b>' + esc(p.options[sol.key[ii]]) + '</b></small></div>';
+      });
+      h += '</div>';
+      break;
+    case 'order':
+      var ord = currentOrder(p);
+      h += '<ol class="order" aria-label="Order for ' + p.full + '">';
+      ord.forEach(function (id, i) {
+        var oc = res && Array.isArray(a) ? (res.items[i] ? ' ok' : ' bad') : '';
+        h += '<li class="' + oc + '"><span class="n">' + (i + 1) + '</span><span class="tx">' + esc(itemText(p, id)) + '</span>' +
+          (res ? '' : '<button type="button" class="mv" data-pid="' + p.id + '" data-mv="-1" data-i="' + i + '" aria-label="Move ' + esc(itemText(p, id)) + ' up"' + (i === 0 ? ' disabled' : '') + '>▲</button>' +
+                      '<button type="button" class="mv" data-pid="' + p.id + '" data-mv="1" data-i="' + i + '" aria-label="Move ' + esc(itemText(p, id)) + ' down"' + (i === ord.length - 1 ? ' disabled' : '') + '>▼</button>') + '</li>';
+      });
+      h += '</ol>';
+      if (!res && !Array.isArray(a)) h += '<div class="hint">Move at least one item to answer this question.</div>';
+      break;
+    case 'bits':
+      var nb = p.n || 8, bits = typeof a === 'string' ? a : new Array(nb + 1).join('0');
+      h += '<div class="bits' + (nb > 8 ? ' many' : '') + '" role="group" aria-label="' + nb + ' bits for ' + p.full + '">';
+      for (var b = 0; b < nb; b++) {
+        if (p.group && b && b % p.group === 0) h += '<span class="bitgap" aria-hidden="true"></span>';
+        var on = bits.charAt(b) === '1', bc = res && typeof a === 'string' ? (res.items[b] ? ' ok' : ' bad') : '';
+        h += '<button type="button" class="bit' + bc + '" data-pid="' + p.id + '" data-bit="' + b + '" aria-pressed="' + on + '" aria-label="Bit ' + (b + 1) + ' of ' + nb + ', currently ' + (on ? 1 : 0) + '"' + dis + '>' + (on ? 1 : 0) + '</button>';
+      }
+      h += '</div>';
+      if (!res) h += '<div class="hint">' + (p.hint || 'Work out the place values on your paper. All bits start at 0.') + '</div>';
+      break;
+    case 'errline':
+      h += '<div class="codepick" role="radiogroup" aria-label="Lines of code for ' + p.full + '">';
+      p.lines.forEach(function (ln, i) {
+        var sel = a === i, lc = '';
+        if (res) { if (sol && i === sol.key) lc = ' ok'; else if (sel) lc = res.score ? ' ok' : ' bad'; }
+        h += '<button type="button" class="ln' + lc + '" role="radio" aria-checked="' + sel + '" data-pid="' + p.id + '" data-line="' + i + '"' + dis + '><span class="no">' + (i + 1) + '</span>' + esc(ln) + '</button>';
+      });
+      h += '</div>';
+      break;
+  }
+  if (res) h += renderFeedback(p, res, sol);
+  return h + '</div>';
+}
+
+function renderFeedback(p, r, sol) {
+  var head = r.status === 'full' ? 'Correct' : r.status === 'part' ? 'Partly correct' : r.status === 'none' ? 'Not answered' : 'Not correct';
+  var cls = r.status === 'full' ? ' full' : r.status === 'none' ? ' none' : '';
+  var h = '<div class="fb' + cls + '"><h4>' + head + ' — ' + r.score + ' of ' + p.marks + ' mark' + (p.marks > 1 ? 's' : '') + '</h4>';
+  if (sol) {
+    if (r.score < p.marks) h += '<div><span class="lbl">Correct answer: </span>' + sol.answer + '</div>';
+    if (sol.explain) h += '<div style="margin-top:4px"><span class="lbl">' + (r.score < p.marks ? 'Why: ' : 'Remember: ') + '</span>' + esc(sol.explain) + '</div>';
+  } else if (r.score < p.marks) h += '<div>Your teacher will go through the correct answer with you.</div>';
+  return h + '</div>';
+}
+
+/* ================================================================
+   Start screen + "check your details" modal
+   ================================================================ */
+function showStart() {
+  $('#bar').hidden = true;
+  var st = state.student || {};
+  var setupMsg = '';
+  if (!SERVER && LOCAL_KEY) setupMsg = '<div class="previewnote"><b>Teacher preview.</b> No Apps Script URL is set in config.js, so this copy marks on this computer and nothing is emailed or saved to your Sheet.</div>';
+  else if (!SERVER) setupMsg = '<div class="teacherwarn"><b>Not set up yet.</b> Teacher: add your Apps Script web-app URL to config.js. Students cannot hand in this test until you do.</div>';
+  $('#app').innerHTML =
+    '<main class="sheet cover"><div class="sheet-inner">' + setupMsg +
+    '<div class="course">' + esc(EXAM.meta.course) + ' · ' + esc(EXAM.meta.year) + '</div>' +
+    '<h1>' + esc(EXAM.meta.title) + '</h1>' +
+    '<div class="sub">' + esc(EXAM.meta.subtitle || '') + '</div>' +
+    '<div class="school">' + esc(CFG.schoolName || '') + '</div>' +
+    '<div class="facts"><div><b>' + (EXAM.meta.durationMinutes || 30) + ' minutes</b><span>Time allowed</span></div><div><b>' + TOTAL + ' marks</b><span>Total</span></div><div><b>' + EXAM.questions.length + ' questions</b><span>Answer all of them</span></div></div>' +
+    '<form class="cand" id="candForm" novalidate><h2>Your details</h2>' +
+    '<div class="mailnote"><span aria-hidden="true">✉</span><span>Your marked test will be <b>emailed to the address you type below</b>. Check it carefully: if it is wrong, you will not get a copy.</span></div>' +
+    '<div class="fields">' +
+      field('first', 'First name', true, st.first) + field('last', 'Last name', true, st.last) +
+      field('nick', 'Nickname', false, st.nick) + field('email', 'Email address', true, st.email, 'email') +
+      (CFG.askStartCode ? field('code', 'Start code <small>(your teacher will tell you)</small>', true, state.startCode, 'text', true) : '') +
+    '</div><button type="submit" hidden></button></form>' +
+    '<div class="instr"><h2>Instructions</h2><ul>' + EXAM.meta.instructions.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>' +
+    '<button class="btn big" id="startBtn" type="button">Begin</button>' +
+    '<p style="color:var(--muted);font-size:15px;margin-top:10px">You will check your details before the timer starts.</p>' +
+    '</div></main>';
+  $('#startBtn').onclick = beginPressed;
+  $('#candForm').onsubmit = function (e) { e.preventDefault(); beginPressed(); };
+}
+function field(id, label, req, val, type, wide) {
+  var ac = { first: 'given-name', last: 'family-name', nick: 'nickname', email: 'email', code: 'off' }[id];
+  return '<div class="field' + (wide ? ' wide' : '') + '" id="f-' + id + '"><label for="in-' + id + '">' + label + (req ? '' : ' <small>(optional)</small>') + '</label>' +
+    '<input id="in-' + id + '" type="' + (type || 'text') + '" autocomplete="' + ac + '" value="' + esc(val || '') + '"' + (req ? ' required' : '') + (id === 'code' ? ' autocapitalize="characters" style="max-width:220px"' : '') + '><div class="err" id="e-' + id + '"></div></div>';
+}
+function setErr(k, m) { var e = $('#e-' + k), f = $('#f-' + k); if (!e) return; e.textContent = m || ''; f.classList.toggle('bad', !!m); }
+function readDetails() {
+  var d = {}; ['first', 'last', 'nick', 'email'].forEach(function (k) { d[k] = ($('#in-' + k).value || '').trim().replace(/\s+/g, ' '); });
+  var code = CFG.askStartCode ? ($('#in-code').value || '').trim() : '';
+  var ok = true;
+  function err(k, m) { setErr(k, m); if (m) ok = false; }
+  err('first', d.first ? '' : 'Type your first name.');
+  err('last', d.last ? '' : 'Type your last name.');
+  var em = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email), dom = (CFG.requiredEmailDomain || '').toLowerCase();
+  err('email', !d.email ? 'Type your email address.' : !em ? 'This does not look like an email address. It should look like name@example.com.' : (dom && d.email.toLowerCase().split('@')[1] !== dom) ? 'Use your school email address (it ends in @' + dom + ').' : '');
+  if (CFG.askStartCode) err('code', code ? '' : 'Type the start code your teacher gives you.');
+  if (!ok) { var f = $('.field.bad input'); if (f) f.focus(); return null; }
+  return { student: d, code: code };
+}
+
+function beginPressed() {
+  var r = readDetails(); if (!r) return;
+  state.student = r.student; state.startCode = r.code; save();
+  var st = r.student;
+  $('#modalRoot').innerHTML =
+    '<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">' +
+    '<h2 id="mTitle">Are your details correct?</h2>' +
+    '<p style="margin:0">Check every letter. Your teacher uses these to record your mark.</p>' +
+    '<dl class="check"><dt>First name</dt><dd>' + esc(st.first) + '</dd><dt>Last name</dt><dd>' + esc(st.last) + '</dd>' +
+    '<dt>Nickname</dt>' + (st.nick ? '<dd>' + esc(st.nick) + '</dd>' : '<dd class="empty">none</dd>') +
+    '<dt>Email</dt><dd class="email">' + esc(st.email) + '</dd></dl>' +
+    '<div class="warnbox">Your marked test will be emailed to <b>' + esc(st.email) + '</b>. If this address is wrong, you will <b>not</b> get a copy.</div>' +
+    '<div id="mErr"></div>' +
+    '<div class="row"><button class="btn ghost" id="mNo" type="button">No, let me fix them</button><button class="btn" id="mYes" type="button">Yes, begin the test</button></div>' +
+    '</div></div>';
+  $('#mNo').onclick = function () { closeModal(); $('#in-first').focus(); };
+  $('#mYes').onclick = confirmBegin;
+  document.addEventListener('keydown', escClose);
+  $('#mYes').focus();
+}
+
+function confirmBegin() {
+  var btn = $('#mYes');
+  state.submissionId = 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  if (!SERVER) { closeModal(); return startTest(); }
+  btn.disabled = true; btn.textContent = 'Checking…'; $('#mErr').innerHTML = '';
+  api({ action: 'begin', submissionId: state.submissionId, student: state.student, startCode: state.startCode })
+    .then(function (j) {
+      if (j && j.ok) { closeModal(); return startTest(); }
+      var code = j && j.code;
+      if (code === 'startcode') { closeModal(); setErr('code', 'That start code is not right. Check it with your teacher.'); $('#in-code').focus(); return; }
+      var msg = code === 'already' ? 'A test has already been handed in using <b>' + esc(state.student.email) + '</b>. Ask your teacher if you need to take it again.'
+              : 'Something went wrong: ' + esc((j && j.error) || 'unknown error') + '. Tell your teacher.';
+      $('#mErr').innerHTML = '<div class="errbox">' + msg + '</div>'; btn.disabled = false; btn.textContent = 'Yes, begin the test';
+    })
+    .catch(function (e) {
+      $('#mErr').innerHTML = '<div class="errbox">' + connectMsg(e) + '</div>';
+      btn.disabled = false; btn.textContent = 'Try again';
+    });
+}
+function escClose(e) { if (e.key === 'Escape') closeModal(); }
+function closeModal() { $('#modalRoot').innerHTML = ''; document.removeEventListener('keydown', escClose); }
+
+function startTest() {
+  state.phase = 'exam'; state.startedAt = Date.now(); state.answers = {}; state.flags = {}; state.warned = []; state.tabSwitches = 0;
+  save(); showExam(); window.scrollTo(0, 0);
+}
+
+/* ================================================================
+   Exam screen
+   ================================================================ */
+var timerI = null;
+function showExam() {
+  $('#bar').hidden = false; $('#qnav').hidden = false;
+  $('#barTitle').textContent = EXAM.meta.year + ' · ' + EXAM.meta.title;
+  $('#barWho').textContent = fullName(state.student);
+  $('#finishBtn').hidden = false; $('#timer').hidden = false;
+  $('#finishBtn').onclick = openFinishModal;
+  $('#app').innerHTML = '<main class="sheet"><div class="sheet-inner" id="paper">' + renderPaper('exam') +
+    '<div class="endpaper"><p>End of the test. Use the numbered buttons at the top to check any question, then finish.</p><button class="btn big" id="finish2" type="button">Finish test</button></div></div></main>';
+  $('#finish2').onclick = openFinishModal;
+  var paper = $('#paper');
+  paper.addEventListener('change', onChange);
+  paper.addEventListener('click', onClick);
+  renderNav(); tick(); clearInterval(timerI); timerI = setInterval(tick, 1000);
+}
+
+function onChange(e) {
+  var el = e.target, pid = el.getAttribute('data-pid'); if (!pid) return;
+  var t = el.getAttribute('data-t'), k = el.getAttribute('data-k'), A = state.answers;
+  if (t === 'mcq') A[pid] = el.value;
+  else if (t === 'tick') { A[pid] = A[pid] || {}; A[pid][k] = +el.value; }
+  else if (t === 'match') { A[pid] = A[pid] || {}; if (el.value === '') delete A[pid][k]; else A[pid][k] = +el.value; }
+  else if (t === 'sel') { A[pid] = A[pid] || {}; if (el.value === '') delete A[pid][k]; else A[pid][k] = el.value; }
+  save(true); renderNav();
+}
+function rerenderPart(pid, focusSel) {
+  var el = document.getElementById('p-' + pid); if (!el) return;
+  el.outerHTML = renderPart(PART[pid], null);
+  if (focusSel) { var f = document.querySelector('#p-' + pid + ' ' + focusSel); if (f) f.focus(); }
+}
+function onClick(e) {
+  var el = e.target.closest('button'); if (!el) return;
+  var pid = el.getAttribute('data-pid'), A = state.answers;
+  if (el.hasAttribute('data-flag')) {
+    var n = el.getAttribute('data-flag'); state.flags[n] = !state.flags[n]; if (!state.flags[n]) delete state.flags[n];
+    el.setAttribute('aria-pressed', !!state.flags[n]); el.textContent = '⚑ ' + (state.flags[n] ? 'Flagged' : 'Flag');
+    save(); renderNav(); return;
+  }
+  if (!pid) return;
+  if (el.hasAttribute('data-bit')) {
+    var b = +el.getAttribute('data-bit'), cur = typeof A[pid] === 'string' ? A[pid] : new Array((PART[pid].n || 8) + 1).join('0');
+    A[pid] = cur.slice(0, b) + (cur.charAt(b) === '1' ? '0' : '1') + cur.slice(b + 1);
+    rerenderPart(pid, '[data-bit="' + b + '"]');
+  } else if (el.hasAttribute('data-line')) {
+    A[pid] = +el.getAttribute('data-line');
+    rerenderPart(pid, '[data-line="' + A[pid] + '"]');
+  } else if (el.hasAttribute('data-mv')) {
+    var p = PART[pid], ord = currentOrder(p).slice(), i = +el.getAttribute('data-i'), d = +el.getAttribute('data-mv'), j = i + d;
+    if (j < 0 || j >= ord.length) return;
+    var t = ord[i]; ord[i] = ord[j]; ord[j] = t; A[pid] = ord;
+    var dir = d < 0 && j === 0 ? 1 : d > 0 && j === ord.length - 1 ? -1 : d;   // keep focus on a usable button
+    rerenderPart(pid, '[data-mv="' + dir + '"][data-i="' + j + '"]');
+  } else return;
+  save(true); renderNav();
+}
+
+function qStatus(q) {
+  var n = q.parts.filter(function (p) { return isAnswered(p); }).length;
+  return n === q.parts.length ? 'done' : n ? 'some' : '';
+}
+function renderNav() {
+  var done = PARTS.filter(isAnswered).length;
+  $('#barCount').textContent = done + ' of ' + PARTS.length + ' answered';
+  $('#qnavInner').innerHTML = '<span class="lbl">Questions</span>' + EXAM.questions.map(function (q) {
+    var s = qStatus(q), f = state.flags[q.num];
+    return '<button type="button" class="chip ' + s + (f ? ' flag' : '') + '" data-go="' + q.num + '" aria-label="Question ' + q.num + (s === 'done' ? ', answered' : s ? ', partly answered' : ', not answered') + (f ? ', flagged' : '') + '">' + q.num + '</button>';
+  }).join('') + '<span class="navkey"><span><i class="d"></i>answered</span><span><i class="f"></i>flagged</span></span>';
+}
+$('#qnavInner').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-go]'); if (!b) return;
+  var q = document.getElementById('q-' + b.getAttribute('data-go')); if (!q) return;
+  q.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  var f = q.querySelector('input:not([disabled]),select,button.bit,button.ln,button.mv:not([disabled])'); if (f) setTimeout(function () { f.focus({ preventScroll: true }); }, 350);
+});
+
+function tick() {
+  if (state.phase !== 'exam') return;
+  var left = DURATION - (Date.now() - state.startedAt), el = $('#timer');
+  el.textContent = fmtTime(left);
+  el.classList.toggle('warn', left <= 5 * 60000 && left > 60000);
+  el.classList.toggle('low', left <= 60000);
+  (CFG.warnAtMinutes || [5, 1]).forEach(function (m) {
+    if (left <= m * 60000 && left > 0 && state.warned.indexOf(m) < 0) { state.warned.push(m); save(); toast(m === 1 ? '1 minute left!' : m + ' minutes left. Check your flagged questions.', 'warn'); }
+  });
+  if (left <= 0) { closeModal(); doSubmit(true); }
+}
+
+/* ---------- finish modal ---------- */
+function openFinishModal() {
+  var missing = PARTS.filter(function (p) { return !isAnswered(p); });
+  var flagged = Object.keys(state.flags).map(Number).sort(function (a, b) { return a - b; });
+  function links(list) { return list.map(function (n) { return '<a href="#q-' + n + '" data-jump="' + n + '">' + n + '</a>'; }).join(', '); }
+  var missQ = []; missing.forEach(function (p) { if (missQ.indexOf(p.qnum) < 0) missQ.push(p.qnum); });
+  $('#modalRoot').innerHTML =
+    '<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">' +
+    '<h2 id="mTitle">Hand in your test?</h2>' +
+    '<p style="margin:0">You cannot change your answers after this. You still have <b>' + fmtTime(DURATION - (Date.now() - state.startedAt)) + '</b> left.</p>' +
+    (missQ.length ? '<div class="warnbox"><b>Not answered yet:</b> question' + (missQ.length > 1 ? 's ' : ' ') + links(missQ) + '</div>' : '<div class="okbox">You have answered every question.</div>') +
+    (flagged.length ? '<div class="warnbox"><b>You flagged:</b> question' + (flagged.length > 1 ? 's ' : ' ') + links(flagged) + '</div>' : '') +
+    '<div class="row"><button class="btn ghost" id="mNo" type="button">No, go back</button><button class="btn" id="mYes" type="button">Yes, hand it in</button></div>' +
+    '</div></div>';
+  var ov = $('#ov');
+  $('#mNo').onclick = closeModal;
+  $('#mYes').onclick = function () { closeModal(); doSubmit(false); };
+  ov.addEventListener('click', function (e) {
+    if (e.target === ov) closeModal();
+    var j = e.target.getAttribute && e.target.getAttribute('data-jump');
+    if (j) { e.preventDefault(); closeModal(); document.getElementById('q-' + j).scrollIntoView({ block: 'start' }); }
+  });
+  document.addEventListener('keydown', escClose);
+  $('#mYes').focus();
+}
+
+/* ================================================================
+   Hand in + marking
+   ================================================================ */
+var retryT = null;
+function doSubmit(auto) {
+  if (state.phase !== 'exam') return;
+  clearInterval(timerI);
+  state.submittedAt = Math.min(Date.now(), state.startedAt + DURATION);
+  state.autoSubmitted = !!auto; state.phase = 'submitting'; state.submitError = '';
+  save(); showSubmitting(); submitNow();
+}
+function showSubmitting() {
+  $('#bar').hidden = false; $('#qnav').hidden = true; $('#finishBtn').hidden = true; $('#timer').hidden = true; $('#barCount').textContent = '';
+  var err = state.submitError;
+  $('#app').innerHTML = '<main class="sheet"><div class="sheet-inner" style="text-align:center">' +
+    (state.autoSubmitted ? '<h1 style="font-size:30px;margin-bottom:6px">Time is up</h1>' : '<h1 style="font-size:30px;margin-bottom:6px">Test handed in</h1>') +
+    (err ? '<div class="errbox" style="text-align:left;margin:22px auto;max-width:560px">' + err + '</div><button class="btn big" id="retryBtn" type="button">Try again</button><p style="color:var(--muted);font-size:15px">Your answers are safe on this computer. Trying again automatically every 20 seconds.</p>'
+         : '<div class="spin" aria-hidden="true"></div><p aria-live="polite">Marking your test…</p>') +
+    '</div></main>';
+  if (err) $('#retryBtn').onclick = function () { state.submitError = ''; save(); showSubmitting(); submitNow(); };
+}
+function submitNow() {
+  clearTimeout(retryT);
+  if (!SERVER) {
+    if (!LOCAL_KEY) return submitFailed('Marking is not set up yet. Tell your teacher (config.js needs the Apps Script URL).', false);
+    return setTimeout(function () { finishWith(markSubmission(LOCAL_KEY, state.answers)); }, 500);
+  }
+  api({ action: 'submit', submissionId: state.submissionId, student: state.student, answers: state.answers,
+        startedAt: state.startedAt, submittedAt: state.submittedAt, tabSwitches: state.tabSwitches, autoSubmitted: state.autoSubmitted,
+        flagged: Object.keys(state.flags).length })
+    .then(function (j) {
+      if (j && j.ok && j.result) finishWith(j.result);
+      else submitFailed('The marking server replied: ' + esc((j && j.error) || 'unknown error') + '. Tell your teacher.', true);
+    })
+    .catch(function (e) { submitFailed(connectMsg(e), true); });
+}
+function submitFailed(msg, retry) {
+  state.submitError = msg; save(); showSubmitting();
+  if (retry) retryT = setTimeout(function () { if (state.phase === 'submitting') { state.submitError = ''; showSubmitting(); submitNow(); } }, 20000);
+}
+function finishWith(result) {
+  state.result = result; state.phase = 'results';
+  state.mail = { status: SERVER ? 'sending' : 'local' };
+  save(); showResults(true); window.scrollTo(0, 0);
+  if (SERVER) sendReports();
+}
+
+/* ================================================================
+   Results (statistics) page
+   ================================================================ */
+function bar(label, sub, s, m) {
+  var p = pct(s, m), c = p >= 70 ? '' : p >= 40 ? ' mid' : ' lo';
+  return '<div class="brow"><div class="nm">' + esc(label) + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</div><div class="track" role="img" aria-label="' + p + ' percent"><div class="fill' + c + '" style="width:0" data-w="' + p + '%"></div></div><div class="v">' + s + ' / ' + m + '</div></div>';
+}
+function boundaryText() {
+  var b = EXAM.meta.gradeBoundaries || [];
+  return b.map(function (x) { return x.grade + ' ' + x.min + '%'; }).join(' · ') + ' · U below ' + (b.length ? b[b.length - 1].min : 0) + '%';
+}
+function showResults(animate) {
+  var R = state.result, st = state.student;
+  $('#bar').hidden = false; $('#qnav').hidden = true; $('#finishBtn').hidden = true; $('#timer').hidden = true; $('#barCount').textContent = ''; $('#barWho').textContent = fullName(st);
+  $('#barTitle').textContent = EXAM.meta.title + ' — your results';
+  var taken = state.submittedAt - state.startedAt;
+  var secs = R.bySection.slice().sort(function (a, b) { return pct(b.score, b.max) - pct(a.score, a.max); });
+  var best = secs[0], worst = secs[secs.length - 1];
+  var fullQs = PARTS.filter(function (p) { return R.parts[p.id].status === 'full'; }).length;
+  var grouped = {};
+  R.revise.forEach(function (x) { (grouped[x.section] = grouped[x.section] || []).push(x); });
+  var reviseHtml = R.revise.length
+    ? SECTIONS.filter(function (s) { return grouped[s.id]; }).map(function (s) {
+        var seen = {}, items = grouped[s.id].filter(function (x) { if (seen[x.topic]) return false; seen[x.topic] = 1; return true; });
+        return '<div><h3 style="font-size:17px;margin:14px 0 4px">' + esc(s.name) + '</h3><ul class="revise">' + items.map(function (x) { return '<li>' + esc(x.topic) + '</li>'; }).join('') + '</ul></div>';
+      }).join('')
+    : '<p>You didn’t drop a single mark. Outstanding!</p>';
+  var msg = R.percent >= 80 ? 'Excellent work!' : R.percent >= 60 ? 'Good work. Check the questions you missed.' : R.percent >= 40 ? 'A solid start. Look at the corrections below.' : 'Keep going. Go through the corrections carefully.';
+
+  $('#app').innerHTML = '<main class="sheet"><div class="sheet-inner" id="results">' +
+    (state.mail.status === 'local' ? '<div class="previewnote">Teacher preview: marked on this computer. Nothing was emailed or saved to the Sheet.</div>' : '') +
+    '<div class="res-top"><div class="grade-ring" aria-label="Grade ' + esc(R.grade) + '"><b>' + esc(R.grade) + '</b><span>GRADE</span></div><div>' +
+      '<h1>' + esc(st.first) + (st.nick ? ' (' + esc(st.nick) + ')' : '') + ' ' + esc(st.last) + '</h1>' +
+      '<div class="score">' + R.total + ' <small>/ ' + R.max + ' marks</small></div>' +
+      '<div class="meta">' + R.percent + '%. ' + msg + '</div>' +
+    '</div></div>' +
+    '<div class="res-block"><div class="tiles">' +
+      '<div><b>' + R.percent + '%</b><span>Overall score</span></div>' +
+      '<div><b>' + fullQs + ' / ' + PARTS.length + '</b><span>Questions fully correct</span></div>' +
+      '<div><b>' + R.answered + ' / ' + R.partCount + '</b><span>Questions answered</span></div>' +
+      '<div><b>' + fmtDur(taken) + '</b><span>Time taken' + (state.autoSubmitted ? ' (time ran out)' : '') + '</span></div>' +
+    '</div></div>' +
+    '<div class="res-block"><h2>Question by question <small>click a square to see that question</small></h2><div class="qmap">' +
+      PARTS.map(function (p) { var r = R.parts[p.id]; return '<button type="button" class="qm ' + r.status + '" data-rev="' + p.id + '" aria-label="' + p.full + ': ' + r.score + ' of ' + p.marks + '">' + p.short + '<small>' + r.score + '/' + p.marks + '</small></button>'; }).join('') +
+    '</div><div class="legend"><span><i style="background:var(--teal)"></i>full marks</span><span><i style="background:var(--amber)"></i>some marks</span><span><i style="background:var(--pen)"></i>no marks</span><span><i style="background:#8A93A6"></i>not answered</span></div></div>' +
+    '<div class="res-block"><h2>Marks by topic</h2>' + R.bySection.map(function (s) { var d = SECTIONS.filter(function (x) { return x.id === s.id; })[0]; return bar(s.name, d && d.desc, s.score, s.max); }).join('') + '</div>' +
+    '<div class="res-block"><h2>Marks by skill</h2>' + R.bySkill.map(function (s) { return bar(s.name, '', s.score, s.max); }).join('') + '</div>' +
+    (best.score > 0 && pct(best.score, best.max) > pct(worst.score, worst.max) ? '<div class="res-block"><div class="note"><b>Strongest topic:</b> ' + esc(best.name) + ' (' + pct(best.score, best.max) + '%). <b>Focus next on:</b> ' + esc(worst.name) + ' (' + pct(worst.score, worst.max) + '%).</div></div>' : '') +
+    '<div class="res-block"><h2>What to revise</h2><div class="revgrid">' + reviseHtml + '</div></div>' +
+    '<p style="color:var(--muted);font-size:14.5px;margin-top:22px">Grades: ' + esc(boundaryText()) + '.</p>' +
+    '<div class="mail" id="mail" aria-live="polite"></div>' +
+    '<div class="actions"><button class="btn big" id="toReview" type="button">Review my marked test</button><button class="btn ghost big" id="printRes" type="button">Print or save as PDF</button></div>' +
+    '</div></main>';
+  $('#toReview').onclick = function () { showReview(); window.scrollTo(0, 0); };
+  $('#printRes').onclick = function () { window.print(); };
+  $('.qmap').addEventListener('click', function (e) { var b = e.target.closest('[data-rev]'); if (b) showReview(b.getAttribute('data-rev')); });
+  renderMail();
+  requestAnimationFrame(function () { setTimeout(function () { $$('.fill').forEach(function (f) { f.style.width = f.getAttribute('data-w'); }); }, animate ? 120 : 0); });
+}
+function renderMail() {
+  var el = $('#mail'); if (!el) return;
+  var s = state.mail.status, em = '<b>' + esc(state.student.email) + '</b>', map = {
+    sending: ['busy', 'Emailing your marked test to ' + em + ' and to your teacher…'],
+    sent: ['ok', 'Your marked test has been emailed to ' + em + ' and to your teacher.'],
+    failed: ['fail', 'Your results are saved, but the email could not be sent. Check the internet connection and try again.'],
+    local: ['', 'Teacher preview: no email was sent.']
+  }[s] || ['', ''];
+  el.className = 'mail ' + map[0];
+  el.innerHTML = '<span class="dot"></span><span>' + map[1] + '</span>' + (s === 'failed' ? ' <button class="btn" id="retry" type="button" style="margin-left:auto">Try again</button>' : '');
+  if (s === 'failed') $('#retry').onclick = function () { state.mail.status = 'sending'; save(); renderMail(); sendReports(); };
+}
+
+/* ---------- review ---------- */
+function showReview(scrollTo) {
+  var R = state.result;
+  $('#barTitle').textContent = EXAM.meta.title + ' — marked test';
+  $('#app').innerHTML =
+    '<div class="reviewbar"><div class="wrap"><button class="btn ghost" id="backRes" type="button">← Back to results</button>' +
+    '<b>' + R.total + ' / ' + R.max + ' marks · Grade ' + esc(R.grade) + '</b>' +
+    '<label><input type="checkbox" id="onlyLost"> Only show questions where I lost marks</label></div></div>' +
+    '<main class="sheet review"><div class="sheet-inner" id="paper">' + renderPaper('review') + '</div></main>';
+  $('#backRes').onclick = function () { showResults(false); window.scrollTo(0, 0); };
+  $('#onlyLost').onchange = function () { var on = this.checked; $$('.q').forEach(function (q) { q.classList.toggle('hidden-q', on && q.getAttribute('data-lost') === '0'); }); };
+  if (scrollTo) { var el = document.getElementById('p-' + scrollTo); if (el) setTimeout(function () { el.closest('.q').scrollIntoView({ block: 'start' }); }, 30); }
+  else window.scrollTo(0, 0);
+}
+
+/* ================================================================
+   PDF reports (HTML sent to Apps Script, which turns it into PDFs)
+   Kept simple (tables, no diagrams) because Google's PDF converter is basic.
+   ================================================================ */
+var RPT_CSS = 'body{font-family:Arial,Helvetica,sans-serif;font-size:10.5pt;color:#1F2536;line-height:1.4}' +
+  'h1{font-family:Cambria,Georgia,serif;color:#1B2B5E;font-size:20pt;margin:0 0 2px}h2{font-family:Cambria,Georgia,serif;color:#1B2B5E;font-size:13pt;margin:16px 0 6px;border-bottom:2px solid #1B2B5E;padding-bottom:2px}' +
+  'h3{font-size:11pt;margin:10px 0 4px;color:#1B2B5E}table{border-collapse:collapse;width:100%;margin:4px 0}th,td{border:1px solid #9AA4B8;padding:4px 6px;text-align:left;vertical-align:top}th{background:#E9EDF5}' +
+  '.r{text-align:right}.muted{color:#5B6478}.ok{color:#0D7A70;font-weight:bold}.no{color:#B42318;font-weight:bold}.box{border:2px solid #1B2B5E;padding:8px 10px;margin:8px 0}' +
+  'pre{font-family:Consolas,"Courier New",monospace;font-size:9pt;background:#F4F5F8;border-left:3px solid #1B2B5E;padding:6px 8px;white-space:pre-wrap}code{font-family:Consolas,"Courier New",monospace}' +
+  '.q{margin:10px 0 14px}.part{margin:6px 0 8px 18px;padding:6px 8px;border-left:3px solid #CBD2DE}.ans{background:#F7F8FB;padding:4px 6px}' +
+  '.mark{float:right;font-weight:bold;color:#1B2B5E}.full{color:#0D7A70}.zero{color:#B42318}.partial{color:#B45309}';
+function rptHead(title) {
+  var st = state.student;
+  return '<html><head><meta charset="utf-8"><style>' + RPT_CSS + '</style></head><body>' +
+    '<div class="muted">' + esc(CFG.schoolName || '') + ' · ' + esc(EXAM.meta.course) + ' · ' + esc(EXAM.meta.year) + '</div>' +
+    '<h1>' + esc(title) + '</h1>' +
+    '<table><tr><th>Student</th><td>' + esc(fullName(st)) + (st.nick ? ' (' + esc(st.nick) + ')' : '') + '</td><th>Email</th><td>' + esc(st.email) + '</td></tr>' +
+    '<tr><th>Handed in</th><td>' + new Date(state.submittedAt).toLocaleString('en-GB') + '</td><th>Time taken</th><td>' + fmtDur(state.submittedAt - state.startedAt) + (state.autoSubmitted ? ' (time ran out)' : '') + '</td></tr></table>';
+}
+function statsReport() {
+  var R = state.result;
+  function rows(list) { return list.map(function (s) { return '<tr><td>' + esc(s.name) + '</td><td class="r">' + s.score + ' / ' + s.max + '</td><td class="r">' + pct(s.score, s.max) + '%</td></tr>'; }).join(''); }
+  var h = rptHead(EXAM.meta.title + ' — Results');
+  h += '<div class="box"><b style="font-size:15pt">Score: ' + R.total + ' / ' + R.max + ' (' + R.percent + '%)</b> &nbsp;&nbsp; <b style="font-size:15pt">Grade: ' + esc(R.grade) + '</b><br><span class="muted">Questions answered: ' + R.answered + ' of ' + R.partCount + '. Fully correct: ' + PARTS.filter(function (p) { return R.parts[p.id].status === 'full'; }).length + '.</span></div>';
+  h += '<h2>Marks by topic</h2><table><tr><th>Topic</th><th class="r">Marks</th><th class="r">%</th></tr>' + rows(R.bySection) + '</table>';
+  h += '<h2>Marks by skill</h2><table><tr><th>Skill</th><th class="r">Marks</th><th class="r">%</th></tr>' + rows(R.bySkill) + '</table>';
+  h += '<h2>Question by question</h2><table><tr>';
+  var cells = PARTS.map(function (p) { var r = R.parts[p.id]; var c = r.status === 'full' ? 'full' : r.status === 'part' ? 'partial' : 'zero'; return '<td><b>' + p.short + '</b><br><span class="' + c + '">' + r.score + '/' + p.marks + '</span></td>'; });
+  for (var i = 0; i < cells.length; i++) { if (i && i % 10 === 0) h += '</tr><tr>'; h += cells[i]; }
+  h += '</tr></table>';
+  h += '<h2>What to revise</h2>';
+  if (!R.revise.length) h += '<p>Full marks — nothing to revise.</p>';
+  else SECTIONS.forEach(function (s) { var seen = {}, xs = R.revise.filter(function (x) { if (x.section !== s.id || seen[x.topic]) return false; seen[x.topic] = 1; return true; }); if (xs.length) h += '<h3>' + esc(s.name) + '</h3><p>' + xs.map(function (x) { return esc(x.topic); }).join('; ') + '</p>'; });
+  h += '<p class="muted" style="margin-top:14px">Grades: ' + esc(boundaryText()) + '.</p>';
+  return h + '</body></html>';
+}
+function tickCross(ok) { return ok ? '<span class="ok">✓</span>' : '<span class="no">✗</span>'; }
+function answerText(p) {
+  var a = state.answers[p.id], r = state.result.parts[p.id], sol = state.result.solutions && state.result.solutions[p.id], K = sol && sol.key;
+  if (!isAnswered(p)) return '<div class="ans"><i>No answer</i></div>';
+  function optT(id) { for (var i = 0; i < p.options.length; i++) if (p.options[i].id === id) return p.options[i].text; return ''; }
+  switch (p.type) {
+    case 'mcq': return '<div class="ans">' + (p.options[0].code ? '<code>' + esc(optT(a)) + '</code>' : esc(optT(a))) + ' ' + tickCross(r.score > 0) + '</div>';
+    case 'bits': return '<div class="ans"><code>' + esc(a) + '</code> ' + tickCross(r.score > 0) + '</div>';
+    case 'errline': return '<div class="ans">Line ' + (a + 1) + ': <code>' + esc(p.lines[a].trim()) + '</code> ' + tickCross(r.score > 0) + '</div>';
+    case 'order': return '<div class="ans">' + a.map(function (id, i) { return esc(itemText(p, id)) + (r.items[i] ? '' : ' <span class="no">✗</span>'); }).join(' → ') + '</div>';
+    case 'select': return '<table><tr><th>Gap</th><th>Student</th>' + (K ? '<th>Correct</th>' : '') + '<th></th></tr>' + p.gaps.map(function (g, i) { return '<tr><td>' + (i + 1) + '</td><td><code>' + esc(a[i] || '—') + '</code></td>' + (K ? '<td><code>' + esc(K[i]) + '</code></td>' : '') + '<td>' + tickCross(r.items[i]) + '</td></tr>'; }).join('') + '</table>';
+    case 'tick': return '<table><tr><th>Statement</th><th>Student</th>' + (K ? '<th>Correct</th>' : '') + '<th></th></tr>' + p.rows.map(function (row, i) { return '<tr><td>' + esc(strip(row.text)) + '</td><td>' + (a[i] != null ? esc(p.columns[a[i]]) : '—') + '</td>' + (K ? '<td>' + esc(p.columns[K[i]]) + '</td>' : '') + '<td>' + tickCross(r.items[i]) + '</td></tr>'; }).join('') + '</table>';
+    case 'match': return '<table><tr><th>Item</th><th>Student</th>' + (K ? '<th>Correct</th>' : '') + '<th></th></tr>' + p.items.map(function (it, i) { return '<tr><td>' + esc(it.text) + '</td><td>' + (a[i] != null ? esc(p.options[a[i]]) : '—') + '</td>' + (K ? '<td>' + esc(p.options[K[i]]) + '</td>' : '') + '<td>' + tickCross(r.items[i]) + '</td></tr>'; }).join('') + '</table>';
+  }
+  return '';
+}
+function promptForReport(p) {
+  var h = (p.lead ? '<div>' + noSvg(p.lead) + '</div>' : '') + '<b>' + esc(p.full) + '</b> ' + p.prompt;
+  if (p.listing) h += '<pre>' + esc(p.listing) + '</pre>';
+  if (p.type === 'errline') h += '<pre>' + p.lines.map(function (l, i) { return (i + 1) + '  ' + esc(l); }).join('\n') + '</pre>';
+  if (p.type === 'select') {
+    var t = p.template.replace(/\{\{(\d+)\}\}/g, function (m, n) { return '[gap ' + (+n + 1) + ']'; });
+    h += p.code ? '<pre>' + esc(t) + '</pre>' : '<div>' + t.replace(/<table class="pv">/, '<table style="width:auto">') + '</div>';
+  }
+  if (p.type === 'mcq' && p.grid) h += '<div class="muted">Options: ' + p.options.map(function (o) { return esc(o.text); }).join(', ') + '</div>';
+  return h;
+}
+function paperReport() {
+  var R = state.result;
+  var h = rptHead(EXAM.meta.title + ' — Marked test');
+  h += '<div class="box"><b>Score: ' + R.total + ' / ' + R.max + ' (' + R.percent + '%) · Grade ' + esc(R.grade) + '</b></div>';
+  var lastSec = null;
+  EXAM.questions.forEach(function (q) {
+    if (q.section !== lastSec) { lastSec = q.section; h += '<h2>' + esc(sectionName(q.section)) + '</h2>'; }
+    var solo = q.parts.length === 1 && !q.stem && !q.listing && !q.figure;
+    h += '<div class="q">' + (solo ? '' : '<b>Question ' + q.num + '</b>') + (q.stem ? '<div>' + q.stem + '</div>' : '') + (q.listing ? '<pre>' + esc(q.listing) + '</pre>' : '') + (q.figure ? '<div class="muted"><i>' + esc(figureText(q)) + '</i></div>' : '');
+    q.parts.forEach(function (p) {
+      var r = R.parts[p.id], sol = R.solutions && R.solutions[p.id];
+      h += '<div class="part"><span class="mark">' + r.score + ' / ' + p.marks + '</span><div>' + promptForReport(p) + '</div>' +
+        '<div class="muted" style="margin-top:4px">Answer given:</div>' + answerText(p);
+      if (sol && r.score < p.marks) h += '<div style="margin-top:4px"><b>Correct answer:</b> ' + sol.answer + (sol.explain ? '<br><span class="muted">' + esc(sol.explain) + '</span>' : '') + '</div>';
+      h += '</div>';
+    });
+    h += '</div>';
+  });
+  return h + '</body></html>';
+}
+function noSvg(h) { return String(h).replace(/<svg[\s\S]*?<\/svg>/g, '<i>[diagram shown on screen]</i>'); }
+function figureText(q) { return q.figureText || (q.figure ? strip(q.figure.replace(/<text/g, ' <text')) : ''); }
+
+function sendReports() {
+  api({ action: 'report', submissionId: state.submissionId, statsHtml: statsReport(), paperHtml: paperReport() })
+    .then(function (j) { state.mail.status = j && j.ok ? 'sent' : 'failed'; if (!(j && j.ok)) console.warn('Apps Script said:', j); save(); renderMail(); })
+    .catch(function () { state.mail.status = 'failed'; save(); renderMail(); });
+}
+
+/* ================================================================
+   Boot
+   ================================================================ */
+document.addEventListener('visibilitychange', function () { if (document.hidden && state.phase === 'exam') { state.tabSwitches++; save(); } });
+window.addEventListener('beforeunload', function (e) { if (state.phase === 'exam' || state.phase === 'submitting') { e.preventDefault(); e.returnValue = ''; } });
+
+/* ================================================================
+   Set-up checker:  index.html?check
+   ================================================================ */
+function showCheck() {
+  $('#bar').hidden = true;
+  var url = CFG.appsScriptUrl || '', rows = [];
+  $('#app').innerHTML = '<main class="sheet"><div class="sheet-inner"><h1 style="font-size:30px">Set-up checker</h1>' +
+    '<p style="color:var(--muted)">For the teacher. This page tests the connection between this test and your Google Apps Script. Students never see it.</p><div id="chk"></div></div></main>';
+  function add(ok, title, detail) {
+    rows.push('<div class="' + (ok === true ? 'okbox' : ok === false ? 'errbox' : 'warnbox') + '"><b>' + (ok === true ? '✓ ' : ok === false ? '✗ ' : '… ') + title + '</b>' + (detail ? '<div style="margin-top:4px">' + detail + '</div>' : '') + '</div>');
+    $('#chk').innerHTML = rows.join('');
+  }
+  var fix = {
+    login: 'Google sent a <b>sign-in page</b>. In Apps Script: <b>Deploy → Manage deployments → ✏️</b>, set <b>Who has access</b> to <b>Anyone</b> (not "Anyone within your school" and not "Anyone with a Google account"), choose <b>Version: New version</b>, then Deploy. If "Anyone" is not offered, your school admin has blocked it: create the Sheet and script in a personal Gmail account instead (README step 2).',
+    error: 'The script has an error. Check all four files are in the project (<code>Settings</code>, <code>Code</code>, <code>Marking</code>, <code>AnswerKey</code>), run <code>authorise</code> once, then <b>Deploy → Manage deployments → ✏️ → Version: New version → Deploy</b>. A deployment keeps running the old code until you choose New version.',
+    network: 'The browser could not read a reply. Most often this is the same sign-in problem: the web app&rsquo;s <b>Who has access</b> is not set to <b>Anyone</b>. Also make sure the address ends in <code>/exec</code>. Test it: open the URL in a <b>private/incognito</b> window. You should see a line starting <code>{"ok":true</code>. If you see a Google sign-in page instead, fix <b>Who has access</b>.'
+  };
+  if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec\/?$/.test(url)) {
+    add(false, 'The Apps Script URL in config.js looks wrong', 'It is: <code>' + esc(url || '(empty)') + '</code><br>It should look like <code>https://script.google.com/macros/s/AKfy…/exec</code>. Copy the <b>Web app URL</b> from <b>Deploy → Manage deployments</b>, not the address of the script editor. ' + (/\/dev\/?$/.test(url) ? 'Yours ends in <code>/dev</code>: that is the test URL, which only works for you when signed in. Use the one ending <code>/exec</code>.' : ''));
+    if (!/^https?:\/\//.test(url)) return;
+  } else add(true, 'The URL in config.js has the right shape');
+  add(null, 'Contacting the script…');
+  fetch(url, { redirect: 'follow' }).then(function (r) { return r.text(); }).then(function (t) {
+    rows.pop();
+    var j = null; try { j = JSON.parse(t); } catch (e) {}
+    if (!j) {
+      var login = /accounts\.google|ServiceLogin|Sign in/i.test(t);
+      add(false, login ? 'Google asked for a sign-in (the web app is not public)' : 'The script replied with a web page, not data', fix[login ? 'login' : 'error']); return;
+    }
+    add(true, 'The script is reachable', esc(j.message || ''));
+    return api({ action: 'ping' }).then(function (p) {
+      if (!p.ok) return add(false, 'The script rejected this test', esc(p.error || '') + (/key/i.test(p.error || '') ? '<br>Make <code>sharedKey</code> in config.js exactly the same as <code>SHARED_KEY</code> in Settings.gs, then deploy a <b>New version</b>.' : ''));
+      if (p.testId !== EXAM.meta.testId) return add(false, 'The script has a different answer key', 'Script: <code>' + esc(p.testId) + '</code>, this page: <code>' + esc(EXAM.meta.testId) + '</code>. Paste the matching <code>AnswerKey.gs</code> and deploy a New version.');
+      add(true, 'Shared key and answer key match', 'Answer key: <code>' + esc(p.testId) + '</code> (' + p.marks + ' marks). Start code required: <b>' + (p.startCode ? 'yes' : 'no') + '</b>.');
+      add(true, 'Everything is connected', 'Students can now take the test. Do one full run-through with your own email, then delete your row from the <b>Results</b> tab.');
+    });
+  }).catch(function (e) {
+    rows.pop();
+    add(false, e && e.kind === 'notjson' ? 'The script replied with a web page, not data' : 'The browser could not read a reply from the script', fix[e && e.kind === 'notjson' ? 'error' : 'network']);
+  });
+}
+
+var qs = new URLSearchParams(location.search);
+if (qs.has('reset')) {
+  if (qs.get('reset') === CFG.resetCode) { try { localStorage.removeItem(SKEY); } catch (e) {} state = freshState(); }
+  history.replaceState(null, '', location.pathname);
+}
+loadLocalKey(function () {
+  if (qs.has('check')) return showCheck();
+  if (state.phase === 'exam') { if (Date.now() - state.startedAt >= DURATION) doSubmit(true); else showExam(); }
+  else if (state.phase === 'submitting') { state.submitError = ''; showSubmitting(); submitNow(); }
+  else if (state.phase === 'results' && state.result) { showResults(false); if (state.mail.status === 'sending' || state.mail.status === 'failed') { state.mail.status = 'sending'; renderMail(); sendReports(); } }
+  else showStart();
+});
+
+})();
+</script>
+</body>
+</html>
